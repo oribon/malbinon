@@ -9,6 +9,6 @@ RUN mkdir /images /dirs
 WORKDIR /malbinon
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 COPY --from=build-env /malbinon/ .
-EXPOSE 8080
+EXPOSE 443
 
 CMD ["./malbinon"]
