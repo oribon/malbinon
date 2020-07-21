@@ -24,7 +24,7 @@
 
 	<script>
 		function postAndRedirect() {
-			var images = {images: document.getElementById("imagesArea").value.replace(/\r\n/g,"\n").split("\n").filter(function(str) { return /\S/.test(str);})};
+			var images = {images: document.getElementById("imagesArea").value.replace(/\r\n/g,"\n").split("\n").filter(function(str) {return /\S/.test(str);}).map(function(v) {return v.toLowerCase();})};
 			console.log(JSON.stringify(images));
 			fetch('/imageslist',{
 				headers: {
