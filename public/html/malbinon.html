@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <link href="/public/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+    <title>Malbinon</title>
+  </head>
+
+  
+  <body id="mainBody">
+    <img id="theSun"class="zoomsun" src="/public/images/sun.png" alt="Sun">
+    <div class="container pullRightLeft">
+        <label>Boker tov ya Malbinon</label>
+        <a href="/">Home</a>
+        <a href="/images">Images</a>
+        <a href="/dirs">Directories</a>
+    </div>
+    <div class="bigbox">
+      <audio id="bgAudio" autoplay="autoplay" loop><source src="/public/audio/teletubbies.mp3" /></audio>
+      <div id="mainDiv"></div>
+    </div>
+    <canvas id="my-canvas"></canvas>
+    <script>
+
+      url = 'ws://'+location.host+'/ws';
+      c = new WebSocket(url);
+      err_count = 0;
+      doom = false;
+
+      c.onmessage = function(msg){
+        var newDiv = document.createElement("div");
+        var textnode = document.createTextNode((new Date().toLocaleTimeString())+ " ==> "+msg.data+"\n");
+        if (msg.data.includes("dog dir")) {
+            dogName = msg.data.split(" ")[(msg.data.split(" ")).length - 1];
+            linknode = document.createElement("a");
+            linknode.href = "/dirs/" + dogName;
+            linknode.appendChild(textnode);
+            newDiv.appendChild(linknode);
+            newDiv.style.backgroundColor = "green";
+        } else {
+            newDiv.appendChild(textnode)
+        }
+        newDiv.style.color = "white";
+        newDiv.style.border = "2px solid white";
+        newDiv.style.opacity = "0.9";
+        if (msg.data.startsWith("err")) {
+            newDiv.style.backgroundColor = "indianred";
+            if (msg.data.includes("No images")) {
+              newDiv.style.backgroundColor= "red";
+              doom = true;
+            } 
+            err_count++;
+        } else if (msg.data.includes("dog dir")) {
+            dogName = msg.data.split(" ")[(msg.data.split(" ")).length - 1];
+            linknode = document.createElement("a");
+            linknode.href = "/dirs/" + dogName;
+            linknode.appendChild(textnode);
+            newDiv.appendChild(linknode);
+            newDiv.style.backgroundColor = "green";
+        } else {
+            newDiv.appendChild(textnode)
+            newDiv.style.backgroundColor = "lightblue";
+        }
+         
+        document.getElementById("mainDiv").appendChild(newDiv);
+      }
+
+      c.onclose = function(event) {
+        document.getElementById("theSun").className = "sun";
+        if (err_count > 0) {
+          document.getElementById("bgAudio").pause()
+          if (doom) {
+            document.getElementById("mainBody").style = "background-color: black; background-image: url('https://i.pinimg.com/originals/13/82/91/138291abb21c7cbf16a72b56706131ce.png');";
+            document.getElementById("theSun").style.display = "none";
+          } else {
+            var confettiSettings = {"target":"my-canvas","max":"80","size":"1","animate":true,"props":[{"type":"svg","src":"https://image.flaticon.com/icons/svg/728/728105.svg","size":40,"weight":0.2}],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":false,"width":"1920","height":"1057","start_from_edge":false,"respawn":true}
+            var confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
+          }
+        } else {  
+          var confettiSettings = {"target":"my-canvas","max":"80","size":"1","animate":true,"props":[{"type":"svg","src":"/public/images/sun.png","size":75,"weight":0.2}],"colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],"clock":"25","rotate":false,"width":"1920","height":"1057","start_from_edge":false,"respawn":true}
+          var confetti = new ConfettiGenerator(confettiSettings);
+          confetti.render();
+        }       
+      }
+    </script>
+
+  </body>
+</html>

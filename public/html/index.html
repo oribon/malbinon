@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>Malbinon</title>
+		<link href="https://unpkg.com/tabulator-tables@4.7.1/dist/css/tabulator.min.css" rel="stylesheet">
+		<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.1/dist/js/tabulator.min.js"></script>
+		<link href="/public/css/style.css" rel="stylesheet">
+	</head>
+
+	<body>
+
+	<img class="sun" src="/public/images/sun.png" alt="Sun">
+	<div class="container pullRightLeft">
+		<label>Malbinon</label>
+		<a class="active" href="/">Home</a>
+		<a href="/images">Images</a>
+		<a href="/dirs">Directories</a>
+	</div>
+
+	<div class="box">
+		<textarea id="imagesArea" style="width: 100%; height:100%;opacity: 0.4; background-color: lightblue; font-weight: bold;border-radius: 12px;" name="imagesArea" required=true></textarea><br>
+		<button id="imgBtn" style="margin-left: 37%; width:26%; height:10%; background-color: lightblue; opacity:0.6; position: absolute; border-radius: 12px; " disabled onclick="postAndRedirect()">Send images</button>
+	</div>
+
+
+	<script>
+		function postAndRedirect() {
+			var images = {images: document.getElementById("imagesArea").value.replace(/\r\n/g,"\n").split("\n").filter(function(str) { return /\S/.test(str);})};
+			console.log(JSON.stringify(images));
+			fetch('/imageslist',{
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				method: 'post',
+				body: JSON.stringify(images)})
+			.then(function(response) {
+				console.log(response.json());
+				window.location.href = "/malbinon";
+			});
+		}
+
+		textArea = document.getElementById("imagesArea");
+		textArea.addEventListener("keyup", function(){
+			btn = document.getElementById("imgBtn");
+			if (textArea.value != "") {
+				btn.disabled = false;
+			} else {
+				btn.disabled = true;
+			}
+		});
+	</script>
+	</body>
+</html>

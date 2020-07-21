@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<title>Malbinon</title>
+		<link href="https://unpkg.com/tabulator-tables@4.7.1/dist/css/tabulator.min.css" rel="stylesheet">
+        <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.1/dist/js/tabulator.min.js"></script>
+        <link href="/public/css/style.css" rel="stylesheet">
+	</head>
+
+	<body>
+        <img class="sun" src="/public/images/sun.png" alt="Sun">
+        <div class="container pullRightLeft">
+            <label>Malbinon</label>
+            <a href="/">Home</a>
+            <a class="active" href="/images">Images</a>
+            <a href="/dirs">Directories</a>
+        </div>
+
+        <div class="box">
+            <input id="filter-value" type="text" placeholder="filter by name"> <br>
+            <div id="myTable"></div>
+        </div>
+
+		<script>
+        var valueEl = document.getElementById("filter-value");
+
+        function updateFilter(){
+            var filterVal = "Name";
+            var typeVal = "like";
+            if(filterVal){
+                table.setFilter(filterVal,typeVal, valueEl.value);
+            }
+        }    
+
+        valueEl.addEventListener("keyup", updateFilter);
+
+        var table = new Tabulator("#myTable", {
+            ajaxURL:"/api/images",
+            layout:"fitColumns",
+            pagination:"local",
+            paginationSize:26,
+            columns:[
+                {title:"Name", field:"Name", formatter:"link", formatterParams:{labelField:"Name",urlPrefix:"/download/",download: true}},
+                {title:"Size", field:"Size"},
+                {title:"ModTime", field:"ModTime"},
+            ],
+            rowClick:function(e, row){
+                rowData = row.getData();
+                window.location.href = "/download/" + rowData["Name"];
+            },
+        }); 
+		</script>
+	</body>
+</html>
